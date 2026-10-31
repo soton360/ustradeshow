@@ -42,11 +42,6 @@ class _SavedTicketsScreenState extends State<SavedTicketsScreen> {
       appBar: AppBar(
         title: const Text(
           'My Tickets',
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.w700,
-            color: AppColors.primaryNavy,
-          ),
         ),
       ),
       body: _isLoading
@@ -204,7 +199,7 @@ class _SavedTicketsScreenState extends State<SavedTicketsScreen> {
                 child: Row(
                   children: [
                     Image.asset(
-                      AppAssets.logo,
+                      AppAssets.usts2026Logo,
                       width: 26,
                       height: 26,
                       fit: BoxFit.contain,

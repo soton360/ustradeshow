@@ -121,7 +121,7 @@ class DigitalTicketScreen extends StatelessWidget {
                                   ],
                                 ),
                                 child: Image.asset(
-                                  AppAssets.logo,
+                                  AppAssets.usts2026Logo,
                                   fit: BoxFit.contain,
                                   errorBuilder: (context, error, stackTrace) =>
                                       const Icon(

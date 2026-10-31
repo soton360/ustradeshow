@@ -48,7 +48,7 @@ class CompactEventHeader extends StatelessWidget {
                     border: Border.all(color: AppColors.borderLight, width: 1),
                   ),
                   child: Image.asset(
-                    AppAssets.logo,
+                    AppAssets.usts2026Logo,
                     fit: BoxFit.contain,
                     errorBuilder: (context, error, stackTrace) => const Icon(
                       Icons.star_rounded,

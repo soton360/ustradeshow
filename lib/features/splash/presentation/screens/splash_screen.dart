@@ -127,7 +127,7 @@ class _SplashScreenState extends State<SplashScreen>
                           ],
                         ),
                         child: Image.asset(
-                          AppAssets.logo,
+                          AppAssets.usts2026Logo,
                           fit: BoxFit.contain,
                           errorBuilder: (context, error, stackTrace) => const Icon(
                             Icons.star_rounded,

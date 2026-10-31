@@ -122,7 +122,7 @@ class _RegistrationFormCardState extends State<RegistrationFormCard> {
                                 Expanded(
                                   child: CustomTextField(
                                     label: 'Full name',
-                                    hint: 'e.g. Soton Ahmed',
+                                    hint: 'e.g. Sarah',
                                     controller:
                                         widget.regController.nameController,
                                     isRequired: true,
@@ -155,7 +155,7 @@ class _RegistrationFormCardState extends State<RegistrationFormCard> {
                             children: [
                               CustomTextField(
                                 label: 'Full name',
-                                hint: 'e.g. Soton Ahmed',
+                                hint: 'e.g. Sarah',
                                 controller: widget.regController.nameController,
                                 isRequired: true,
                                 prefixIcon: const Icon(
