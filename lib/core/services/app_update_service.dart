@@ -327,7 +327,7 @@ class AppUpdateService {
               ),
             ),
             SizedBox(width: 12),
-            Text('Checking for app updates... / আপডেট চেক করা হচ্ছে...'),
+            Text('Checking for app updates...'),
           ],
         ),
         duration: Duration(seconds: 4),
@@ -356,7 +356,7 @@ class AppUpdateService {
                     ),
                   ),
                   const Text(
-                    'আপনার অ্যাপটি সর্বশেষ ভার্সনে আপডেট রয়েছে।',
+                    'You are using the latest version of the application.',
                     style: TextStyle(fontSize: 12, color: Colors.white70),
                   ),
                 ],

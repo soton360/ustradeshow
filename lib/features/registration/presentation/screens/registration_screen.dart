@@ -148,7 +148,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Check for Updates / আপডেট চেক করুন',
+            tooltip: 'Check for Updates',
             icon: const Icon(
               Icons.system_update_rounded,
               color: AppColors.primaryNavy,

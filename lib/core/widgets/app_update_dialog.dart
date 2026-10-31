@@ -3,7 +3,7 @@ import '../constants/app_colors.dart';
 import '../services/app_update_service.dart';
 
 /// Modal dialog prompting the user to update the app when a new version
-/// is available on Google Play Store.
+/// is available on Google Play Store or Apple App Store.
 class AppUpdateDialog extends StatelessWidget {
   final UpdateResult updateResult;
   final VoidCallback onUpdate;
@@ -80,7 +80,7 @@ class AppUpdateDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 18),
 
-                // Notice Title (Bilingual)
+                // Notice Title
                 const Text(
                   'New Update Available!',
                   textAlign: TextAlign.center,
@@ -93,10 +93,10 @@ class AppUpdateDialog extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 const Text(
-                  'নতুন ভার্সন পাওয়া গেছে!',
+                  'A new version is ready for installation.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
-                    fontSize: 14,
+                    fontSize: 13,
                     fontWeight: FontWeight.w600,
                     color: AppColors.usaRed,
                   ),
@@ -105,7 +105,7 @@ class AppUpdateDialog extends StatelessWidget {
 
                 // Description
                 const Text(
-                  'A newer version of the 30th U.S. Trade Show 2026 app is available on Google Play Store with performance improvements and new features.',
+                  'A newer version of the 30th U.S. Trade Show 2026 app is available on the store with performance improvements and new features.',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 13,
@@ -128,7 +128,7 @@ class AppUpdateDialog extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       _buildVersionItem(
-                        label: 'Current / বর্তমান',
+                        label: 'Current Version',
                         version: 'v${updateResult.currentVersion}',
                         isCurrent: true,
                       ),
@@ -138,7 +138,7 @@ class AppUpdateDialog extends StatelessWidget {
                         color: AppColors.borderDark,
                       ),
                       _buildVersionItem(
-                        label: 'Latest / নতুন',
+                        label: 'Latest Version',
                         version: 'v${updateResult.latestVersion}',
                         isCurrent: false,
                       ),
@@ -193,7 +193,7 @@ class AppUpdateDialog extends StatelessWidget {
                     ),
                     icon: const Icon(Icons.get_app_rounded, size: 22),
                     label: const Text(
-                      'Update Now / এখনই আপডেট করুন',
+                      'Update Now',
                       style: TextStyle(
                         fontSize: 14,
                         fontWeight: FontWeight.w700,
@@ -220,7 +220,7 @@ class AppUpdateDialog extends StatelessWidget {
                         onDismiss?.call();
                       },
                       child: const Text(
-                        'Remind Me Later / পরে আপডেট করব',
+                        'Remind Me Later',
                         style: TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.w600,

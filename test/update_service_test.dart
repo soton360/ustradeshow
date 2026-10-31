@@ -60,11 +60,11 @@ void main() {
       );
 
       expect(find.text('New Update Available!'), findsOneWidget);
-      expect(find.text('নতুন ভার্সন পাওয়া গেছে!'), findsOneWidget);
+      expect(find.text('A new version is ready for installation.'), findsOneWidget);
       expect(find.text('v1.0.0'), findsOneWidget);
       expect(find.text('v1.0.2'), findsOneWidget);
 
-      await tester.tap(find.text('Update Now / এখনই আপডেট করুন'));
+      await tester.tap(find.text('Update Now'));
       await tester.pumpAndSettle();
       expect(updatedTapped, isTrue);
     });
@@ -96,7 +96,7 @@ void main() {
         ),
       );
 
-      await tester.tap(find.text('Remind Me Later / পরে আপডেট করব'));
+      await tester.tap(find.text('Remind Me Later'));
       await tester.pumpAndSettle();
       expect(dismissedTapped, isTrue);
     });
