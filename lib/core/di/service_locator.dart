@@ -1,4 +1,5 @@
 import '../../core/network/api_client.dart';
+import '../../core/services/app_update_service.dart';
 import '../../features/registration/data/datasources/registration_remote_datasource.dart';
 import '../../features/registration/data/repositories/registration_repository_impl.dart';
 import '../../features/registration/domain/repositories/registration_repository.dart';
@@ -61,6 +62,11 @@ class ServiceLocator {
   RegistrationController get registrationController {
     _ensureInitialized();
     return _registrationController;
+  }
+
+  AppUpdateService get updateService {
+    _ensureInitialized();
+    return AppUpdateService.instance;
   }
 
   void dispose() {

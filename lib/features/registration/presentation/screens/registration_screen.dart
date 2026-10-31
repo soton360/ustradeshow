@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
+import '../../../../core/services/app_update_service.dart';
 import '../controllers/registration_controller.dart';
 import '../controllers/seminar_controller.dart';
 import '../widgets/compact_event_header.dart';
@@ -29,9 +30,10 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   void initState() {
     super.initState();
-    // Pre-fetch seminars quietly in background
+    // Pre-fetch seminars quietly in background & check for app updates
     WidgetsBinding.instance.addPostFrameCallback((_) {
       widget.semController.fetchSeminars();
+      AppUpdateService.instance.checkForUpdateAndPrompt(context);
     });
   }
 
@@ -146,6 +148,19 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         actions: [
           IconButton(
+            tooltip: 'Check for Updates / আপডেট চেক করুন',
+            icon: const Icon(
+              Icons.system_update_rounded,
+              color: AppColors.primaryNavy,
+            ),
+            onPressed: () {
+              AppUpdateService.instance.checkForUpdateAndPrompt(
+                context,
+                isManualCheck: true,
+              );
+            },
+          ),
+          IconButton(
             tooltip: 'Event Guide & Details',
             icon: const Icon(
               Icons.info_outline_rounded,
@@ -168,7 +183,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
               );
             },
           ),
-          const SizedBox(width: 8),
+          const SizedBox(width: 4),
         ],
       ),
       body: SafeArea(
