@@ -105,6 +105,7 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
 
     return Scaffold(
       backgroundColor: AppColors.background,
+      appBar: AppBar(),
       body: Stack(
         children: [
           const SkylineBottomDecoration(

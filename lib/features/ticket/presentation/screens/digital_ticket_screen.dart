@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
+import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/widgets/ribbon_bar.dart';
 import '../../../../core/widgets/skyline_bottom_decoration.dart';
 
@@ -28,6 +30,24 @@ class DigitalTicketScreen extends StatelessWidget {
     final passTypeDesc = isEntireDays
         ? '(Valid for entrance on all days 5–7 November 2026)'
         : '(Valid for entrance on any single day of the U.S. Trade Show)';
+
+    final ticketDateRaw = ticket['ticket_date']?.toString();
+    String validDateDisplay = '5–7 November 2026';
+    String validDateSubLabel = 'Full 3-Day Pass';
+
+    if (isEntireDays) {
+      validDateDisplay = '5–7 November 2026';
+      validDateSubLabel = 'Full 3-Day Pass';
+    } else if (ticketDateRaw != null && ticketDateRaw.isNotEmpty) {
+      final parsedDate = DateFormatter.tryParse(ticketDateRaw);
+      if (parsedDate != null) {
+        validDateDisplay = DateFormatter.formatDisplayDate(parsedDate);
+        validDateSubLabel = DateFormat('EEEE').format(parsedDate);
+      } else {
+        validDateDisplay = ticketDateRaw;
+        validDateSubLabel = 'Single Day Pass';
+      }
+    }
 
     final visitorName = visitor['name']?.toString() ?? 'Visitor';
     final visitorPhone = visitor['phone']?.toString() ?? 'N/A';
@@ -71,483 +91,498 @@ class DigitalTicketScreen extends StatelessWidget {
           ),
           SafeArea(
             child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 540),
-              child: Column(
-                children: [
-                  // Pass Container (styled exactly like the email document)
-                  Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(24),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withValues(alpha: 0.35),
-                          blurRadius: 30,
-                          offset: const Offset(0, 10),
-                        ),
-                      ],
-                    ),
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        // Top Ribbon Accent
-                        const RibbonBar(height: 5),
-
-                        // Section 1: Blue Hero Card (matching email header)
-                        Container(
-                          padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
-                          decoration: const BoxDecoration(
-                            gradient: LinearGradient(
-                              colors: [
-                                Color(0xFF0D253F),
-                                Color(0xFF1E3A8A),
-                              ],
-                              begin: Alignment.topCenter,
-                              end: Alignment.bottomCenter,
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              child: Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 540),
+                  child: Column(
+                    children: [
+                      // Pass Container (styled exactly like the email document)
+                      Container(
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(24),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.35),
+                              blurRadius: 30,
+                              offset: const Offset(0, 10),
                             ),
-                          ),
-                          child: Column(
-                            children: [
-                              // Centered Official Logo
-                              Container(
-                                width: 88,
-                                height: 88,
-                                padding: const EdgeInsets.all(6),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(16),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withValues(alpha: 0.2),
-                                      blurRadius: 10,
-                                      offset: const Offset(0, 3),
-                                    ),
+                          ],
+                        ),
+                        clipBehavior: Clip.antiAlias,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            // Top Ribbon Accent
+                            const RibbonBar(height: 5),
+
+                            // Section 1: Blue Hero Card (matching email header)
+                            Container(
+                              padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
+                              decoration: const BoxDecoration(
+                                gradient: LinearGradient(
+                                  colors: [
+                                    Color(0xFF0D253F),
+                                    Color(0xFF1E3A8A),
                                   ],
-                                ),
-                                child: Image.asset(
-                                  AppAssets.usts2026Logo,
-                                  fit: BoxFit.contain,
-                                  errorBuilder: (context, error, stackTrace) =>
-                                      const Icon(
-                                    Icons.business,
-                                    size: 44,
-                                    color: AppColors.primaryNavy,
-                                  ),
+                                  begin: Alignment.topCenter,
+                                  end: Alignment.bottomCenter,
                                 ),
                               ),
-                              const SizedBox(height: 16),
-
-                              // Header Pill: 30TH U.S. TRADE SHOW 2026 ENTRY PASS
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: Colors.white.withValues(alpha: 0.15),
-                                  borderRadius: BorderRadius.circular(20),
-                                  border: Border.all(
-                                    color: Colors.white.withValues(alpha: 0.25),
-                                    width: 1,
-                                  ),
-                                ),
-                                child: const Text(
-                                  '30TH U.S. TRADE SHOW 2026 ENTRY PASS',
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: Colors.white,
-                                    letterSpacing: 0.8,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-
-                              // Title
-                              const Text(
-                                '30th U.S. Trade Show 2026',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 22,
-                                  fontWeight: FontWeight.w900,
-                                  color: Colors.white,
-                                  letterSpacing: -0.3,
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-
-                              // Venue & Date Subtitle
-                              Wrap(
-                                alignment: WrapAlignment.center,
-                                crossAxisAlignment: WrapCrossAlignment.center,
-                                spacing: 6,
-                                runSpacing: 4,
-                                children: const [
-                                  Text(
-                                    '📍 InterContinental Dhaka',
-                                    style: TextStyle(
-                                      fontSize: 11.5,
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w500,
+                              child: Column(
+                                children: [
+                                  // Centered Official Logo
+                                  Container(
+                                    width: 88,
+                                    height: 88,
+                                    padding: const EdgeInsets.all(6),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(16),
+                                      boxShadow: [
+                                        BoxShadow(
+                                          color: Colors.black.withValues(alpha: 0.2),
+                                          blurRadius: 10,
+                                          offset: const Offset(0, 3),
+                                        ),
+                                      ],
+                                    ),
+                                    child: Image.asset(
+                                      AppAssets.usts2026Logo,
+                                      fit: BoxFit.contain,
+                                      errorBuilder: (context, error, stackTrace) =>
+                                          const Icon(
+                                        Icons.business,
+                                        size: 44,
+                                        color: AppColors.primaryNavy,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    '•',
-                                    style: TextStyle(
-                                      fontSize: 11.5,
-                                      color: Colors.white54,
+                                  const SizedBox(height: 16),
+
+                                  // Header Pill: 30TH U.S. TRADE SHOW 2026 ENTRY PASS
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white.withValues(alpha: 0.15),
+                                      borderRadius: BorderRadius.circular(20),
+                                      border: Border.all(
+                                        color: Colors.white.withValues(alpha: 0.25),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: const Text(
+                                      '30TH U.S. TRADE SHOW 2026 ENTRY PASS',
+                                      style: TextStyle(
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.w800,
+                                        color: Colors.white,
+                                        letterSpacing: 0.8,
+                                      ),
                                     ),
                                   ),
-                                  Text(
-                                    '📅 Nov 5, 2026 - Nov 7, 2026',
+                                  const SizedBox(height: 10),
+
+                                  // Title
+                                  const Text(
+                                    '30th U.S. Trade Show 2026',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 22,
+                                      fontWeight: FontWeight.w900,
+                                      color: Colors.white,
+                                      letterSpacing: -0.3,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+
+                                  // Venue & Valid Date Subtitle
+                                  Wrap(
+                                    alignment: WrapAlignment.center,
+                                    crossAxisAlignment: WrapCrossAlignment.center,
+                                    spacing: 6,
+                                    runSpacing: 4,
+                                    children: [
+                                      const Text(
+                                        '📍 InterContinental Dhaka',
+                                        style: TextStyle(
+                                          fontSize: 11.5,
+                                          color: Colors.white70,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const Text(
+                                        '•',
+                                        style: TextStyle(
+                                          fontSize: 11.5,
+                                          color: Colors.white54,
+                                        ),
+                                      ),
+                                      Text(
+                                        '📅 Valid: $validDateDisplay',
+                                        style: const TextStyle(
+                                          fontSize: 11.5,
+                                          color: Color(0xFFFEF08A),
+                                          fontWeight: FontWeight.w700,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Section 2: VISITOR DETAILS (Table exactly like email)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'VISITOR DETAILS',
                                     style: TextStyle(
                                       fontSize: 11.5,
-                                      color: Colors.white70,
-                                      fontWeight: FontWeight.w500,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF64748B),
+                                      letterSpacing: 0.8,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(10),
+                                      border: Border.all(
+                                        color: const Color(0xFFE2E8F0),
+                                        width: 1,
+                                      ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        _buildTableRow(
+                                          'Visitor Name:',
+                                          visitorName,
+                                          isBold: true,
+                                        ),
+                                        const Divider(
+                                            height: 1, color: Color(0xFFE2E8F0)),
+                                        _buildTableRow(
+                                          'Phone:',
+                                          visitorPhone,
+                                          isLink: true,
+                                        ),
+                                        const Divider(
+                                            height: 1, color: Color(0xFFE2E8F0)),
+                                        _buildTableRow(
+                                          'Email:',
+                                          visitorEmail,
+                                          isLink: true,
+                                        ),
+                                        const Divider(
+                                            height: 1, color: Color(0xFFE2E8F0)),
+                                        _buildTableRow(
+                                          'Company / Org:',
+                                          companyDisplay,
+                                        ),
+                                        const Divider(
+                                            height: 1, color: Color(0xFFE2E8F0)),
+                                        _buildTableRow(
+                                          'Valid Date:',
+                                          '$validDateDisplay ($validDateSubLabel)',
+                                          isHighlight: true,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ],
                               ),
-                            ],
-                          ),
-                        ),
+                            ),
 
-                        // Section 2: VISITOR DETAILS (Table exactly like email)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'VISITOR DETAILS',
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF64748B),
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(10),
-                                  border: Border.all(
-                                    color: const Color(0xFFE2E8F0),
-                                    width: 1,
+                            // Section 3: 3 Stat Cards Row (Pass Type, Persons/Pax, Payment)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 20),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: _buildStatBox(
+                                      'PASS TYPE',
+                                      passTypeName,
+                                      textColor: const Color(0xFF0F172A),
+                                    ),
                                   ),
-                                ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: _buildStatBox(
+                                      'PERSONS / PAX',
+                                      paxDisplay,
+                                      textColor: const Color(0xFF0F172A),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  Expanded(
+                                    child: _buildStatBox(
+                                      'PAYMENT',
+                                      paymentDisplay,
+                                      textColor: AppColors.usaGreen,
+                                      isPayment: true,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const SizedBox(height: 18),
+                            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+
+                            // Section 4: GATE ENTRY QR CODE
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
+                              child: Column(
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 14, vertical: 5),
+                                    decoration: BoxDecoration(
+                                      color: const Color(0xFFEFF6FF),
+                                      borderRadius: BorderRadius.circular(16),
+                                    ),
+                                    child: const Text(
+                                      'GATE ENTRY QR CODE',
+                                      style: TextStyle(
+                                        fontSize: 10.5,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF1E40AF),
+                                        letterSpacing: 0.8,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 14),
+
+                                  // QR Code in distinct square border
+                                  Container(
+                                    padding: const EdgeInsets.all(12),
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: BorderRadius.circular(12),
+                                      border: Border.all(
+                                        color: const Color(0xFF0A2540),
+                                        width: 1.8,
+                                      ),
+                                    ),
+                                    child: QrImageView(
+                                      data: ticketNo,
+                                      version: QrVersions.auto,
+                                      size: 160,
+                                      backgroundColor: Colors.white,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 12),
+
+                                  // Ticket Number
+                                  Text(
+                                    ticketNo,
+                                    style: const TextStyle(
+                                      fontSize: 19,
+                                      fontWeight: FontWeight.w900,
+                                      letterSpacing: 2.0,
+                                      fontFamily: 'monospace',
+                                      color: Color(0xFF0A2540),
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+
+                                  const Text(
+                                    'Please show this QR code at the U.S. Trade Show entrance scanner for instant check-in.',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Color(0xFF475467),
+                                      height: 1.35,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            const Divider(height: 1, color: Color(0xFFE2E8F0)),
+
+                            // Section 5: ENTRY INSTRUCTIONS & GUIDELINES (Verbatim from email)
+                            Padding(
+                              padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'ENTRY INSTRUCTIONS & GUIDELINES',
+                                    style: TextStyle(
+                                      fontSize: 11.5,
+                                      fontWeight: FontWeight.w800,
+                                      color: Color(0xFF64748B),
+                                      letterSpacing: 0.8,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 10),
+                                  _buildBulletPoint(
+                                    'Ticket Valid Date: $validDateDisplay ($validDateSubLabel).',
+                                  ),
+                                  _buildBulletPoint(
+                                    'Pass Type: $passTypeName $passTypeDesc.',
+                                  ),
+                                  _buildBulletPoint(
+                                    'Admit Capacity: $paxCount person(s) admission.',
+                                  ),
+                                  _buildBulletPoint(
+                                    'QR code encodes your unique ticket ID ($ticketNo) for gate scanning.',
+                                  ),
+                                  _buildBulletPoint(
+                                    'Please have this email/pass ready on your phone or keep a printed copy when arriving at the venue.',
+                                  ),
+                                  _buildBulletPoint(
+                                    'Each ticket is unique and non-transferable. Once scanned, duplicate entry will be rejected.',
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                            // Section 6: Registered Seminars if any
+                            if (seminars.isNotEmpty) ...[
+                              const Divider(height: 1, color: Color(0xFFE2E8F0)),
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
                                 child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    _buildTableRow(
-                                      'Visitor Name:',
-                                      visitorName,
-                                      isBold: true,
+                                    const Text(
+                                      'REGISTERED SEMINARS (CRYSTAL BALLROOM)',
+                                      style: TextStyle(
+                                        fontSize: 11,
+                                        fontWeight: FontWeight.w800,
+                                        color: Color(0xFF64748B),
+                                        letterSpacing: 0.8,
+                                      ),
                                     ),
-                                    const Divider(
-                                        height: 1, color: Color(0xFFE2E8F0)),
-                                    _buildTableRow(
-                                      'Phone:',
-                                      visitorPhone,
-                                      isLink: true,
-                                    ),
-                                    const Divider(
-                                        height: 1, color: Color(0xFFE2E8F0)),
-                                    _buildTableRow(
-                                      'Email:',
-                                      visitorEmail,
-                                      isLink: true,
-                                    ),
-                                    const Divider(
-                                        height: 1, color: Color(0xFFE2E8F0)),
-                                    _buildTableRow(
-                                      'Company / Org:',
-                                      companyDisplay,
-                                    ),
+                                    const SizedBox(height: 8),
+                                    ...seminars.map((s) {
+                                      final sMap =
+                                          s is Map<String, dynamic> ? s : {};
+                                      final title = sMap['seminar_title'] ??
+                                          sMap['title'] ??
+                                          'Seminar';
+                                      final date = sMap['seminar_date'] ??
+                                          sMap['date'] ??
+                                          '';
+
+                                      return Padding(
+                                        padding: const EdgeInsets.only(bottom: 6.0),
+                                        child: Row(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Icon(
+                                              Icons.check_circle,
+                                              size: 15,
+                                              color: AppColors.usaGreen,
+                                            ),
+                                            const SizedBox(width: 8),
+                                            Expanded(
+                                              child: Text(
+                                                '$title ($date)',
+                                                style: const TextStyle(
+                                                  fontSize: 12,
+                                                  fontWeight: FontWeight.w600,
+                                                  color: Color(0xFF0F172A),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      );
+                                    }),
                                   ],
                                 ),
                               ),
                             ],
-                          ),
-                        ),
 
-                        // Section 3: 3 Stat Cards Row (Pass Type, Persons/Pax, Payment)
-                        Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 20),
-                          child: Row(
-                            children: [
-                              Expanded(
-                                child: _buildStatBox(
-                                  'PASS TYPE',
-                                  passTypeName,
-                                  textColor: const Color(0xFF0F172A),
-                                ),
+                            // Section 7: Navy Email Footer
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 18),
+                              decoration: const BoxDecoration(
+                                color: Color(0xFF0D253F),
                               ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildStatBox(
-                                  'PERSONS / PAX',
-                                  paxDisplay,
-                                  textColor: const Color(0xFF0F172A),
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              Expanded(
-                                child: _buildStatBox(
-                                  'PAYMENT',
-                                  paymentDisplay,
-                                  textColor: AppColors.usaGreen,
-                                  isPayment: true,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const SizedBox(height: 18),
-                        const Divider(height: 1, color: Color(0xFFE2E8F0)),
-
-                        // Section 4: GATE ENTRY QR CODE
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 20, 20, 16),
-                          child: Column(
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 14, vertical: 5),
-                                decoration: BoxDecoration(
-                                  color: const Color(0xFFEFF6FF),
-                                  borderRadius: BorderRadius.circular(16),
-                                ),
-                                child: const Text(
-                                  'GATE ENTRY QR CODE',
-                                  style: TextStyle(
-                                    fontSize: 10.5,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF1E40AF),
-                                    letterSpacing: 0.8,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(height: 14),
-
-                              // QR Code in distinct square border
-                              Container(
-                                padding: const EdgeInsets.all(12),
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: BorderRadius.circular(12),
-                                  border: Border.all(
-                                    color: const Color(0xFF0A2540),
-                                    width: 1.8,
-                                  ),
-                                ),
-                                child: QrImageView(
-                                  data: ticketNo,
-                                  version: QrVersions.auto,
-                                  size: 160,
-                                  backgroundColor: Colors.white,
-                                ),
-                              ),
-                              const SizedBox(height: 12),
-
-                              // Ticket Number
-                              Text(
-                                ticketNo,
-                                style: const TextStyle(
-                                  fontSize: 19,
-                                  fontWeight: FontWeight.w900,
-                                  letterSpacing: 2.0,
-                                  fontFamily: 'monospace',
-                                  color: Color(0xFF0A2540),
-                                ),
-                              ),
-                              const SizedBox(height: 6),
-
-                              const Text(
-                                'Please show this QR code at the U.S. Trade Show entrance scanner for instant check-in.',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12,
-                                  color: Color(0xFF475467),
-                                  height: 1.35,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        const Divider(height: 1, color: Color(0xFFE2E8F0)),
-
-                        // Section 5: ENTRY INSTRUCTIONS & GUIDELINES (Verbatim from email)
-                        Padding(
-                          padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              const Text(
-                                'ENTRY INSTRUCTIONS & GUIDELINES',
-                                style: TextStyle(
-                                  fontSize: 11.5,
-                                  fontWeight: FontWeight.w800,
-                                  color: Color(0xFF64748B),
-                                  letterSpacing: 0.8,
-                                ),
-                              ),
-                              const SizedBox(height: 10),
-                              _buildBulletPoint(
-                                'Pass Type: $passTypeName $passTypeDesc.',
-                              ),
-                              _buildBulletPoint(
-                                'Admit Capacity: $paxCount person(s) admission.',
-                              ),
-                              _buildBulletPoint(
-                                'QR code encodes your unique ticket ID ($ticketNo) for gate scanning.',
-                              ),
-                              _buildBulletPoint(
-                                'Please have this email/pass ready on your phone or keep a printed copy when arriving at the venue.',
-                              ),
-                              _buildBulletPoint(
-                                'Each ticket is unique and non-transferable. Once scanned, duplicate entry will be rejected.',
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        // Section 6: Registered Seminars if any
-                        if (seminars.isNotEmpty) ...[
-                          const Divider(height: 1, color: Color(0xFFE2E8F0)),
-                          Padding(
-                            padding: const EdgeInsets.fromLTRB(20, 16, 20, 16),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'REGISTERED SEMINARS (CRYSTAL BALLROOM)',
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    fontWeight: FontWeight.w800,
-                                    color: Color(0xFF64748B),
-                                    letterSpacing: 0.8,
-                                  ),
-                                ),
-                                const SizedBox(height: 8),
-                                ...seminars.map((s) {
-                                  final sMap =
-                                      s is Map<String, dynamic> ? s : {};
-                                  final title = sMap['seminar_title'] ??
-                                      sMap['title'] ??
-                                      'Seminar';
-                                  final date = sMap['seminar_date'] ??
-                                      sMap['date'] ??
-                                      '';
-
-                                  return Padding(
-                                    padding: const EdgeInsets.only(bottom: 6.0),
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        const Icon(
-                                          Icons.check_circle,
-                                          size: 15,
-                                          color: AppColors.usaGreen,
-                                        ),
-                                        const SizedBox(width: 8),
-                                        Expanded(
-                                          child: Text(
-                                            '$title ($date)',
-                                            style: const TextStyle(
-                                              fontSize: 12,
-                                              fontWeight: FontWeight.w600,
-                                              color: Color(0xFF0F172A),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
+                              child: Column(
+                                children: const [
+                                  Text(
+                                    'American Chamber of Commerce in Bangladesh (AmCham)',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 12.5,
+                                      fontWeight: FontWeight.w700,
+                                      color: Colors.white,
                                     ),
-                                  );
-                                }),
-                              ],
+                                  ),
+                                  SizedBox(height: 6),
+                                  Text(
+                                    'Need help? Contact U.S. Trade Show support at faysal@amchambd.org',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Color(0xFF93C5FD),
+                                    ),
+                                  ),
+                                  SizedBox(height: 4),
+                                  Text(
+                                    '© 2026 AmCham Bangladesh. All rights reserved. · Developed by M360 ICT',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      fontSize: 10,
+                                      color: Colors.white54,
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
-                          ),
-                        ],
-
-                        // Section 7: Navy Email Footer
-                        Container(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 18),
-                          decoration: const BoxDecoration(
-                            color: Color(0xFF0D253F),
-                          ),
-                          child: Column(
-                            children: const [
-                              Text(
-                                'American Chamber of Commerce in Bangladesh (AmCham)',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 12.5,
-                                  fontWeight: FontWeight.w700,
-                                  color: Colors.white,
-                                ),
-                              ),
-                              SizedBox(height: 6),
-                              Text(
-                                'Need help? Contact U.S. Trade Show support at faysal@amchambd.org',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 11,
-                                  color: Color(0xFF93C5FD),
-                                ),
-                              ),
-                              SizedBox(height: 4),
-                              Text(
-                                '© 2026 AmCham Bangladesh. All rights reserved. · Developed by M360 ICT',
-                                textAlign: TextAlign.center,
-                                style: TextStyle(
-                                  fontSize: 10,
-                                  color: Colors.white54,
-                                ),
-                              ),
-                            ],
-                          ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-
-                  const SizedBox(height: 20),
-
-                  // Close Button
-                  ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.white.withValues(alpha: 0.15),
-                      foregroundColor: Colors.white,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
                       ),
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 32, vertical: 14),
-                    ),
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text('Back to Home'),
+
+                      const SizedBox(height: 20),
+
+                      // Close Button
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white.withValues(alpha: 0.15),
+                          foregroundColor: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 32, vertical: 14),
+                        ),
+                        onPressed: () => Navigator.pop(context),
+                        child: const Text('Back to Home'),
+                      ),
+                      const SizedBox(height: 20),
+                    ],
                   ),
-                  const SizedBox(height: 20),
-                ],
+                ),
               ),
             ),
           ),
-        ),
+        ],
       ),
-    ],
-  ),
-);
+    );
   }
 
-  Widget _buildTableRow(String label, String value,
-      {bool isBold = false, bool isLink = false}) {
+  Widget _buildTableRow(
+    String label,
+    String value, {
+    bool isBold = false,
+    bool isLink = false,
+    bool isHighlight = false,
+  }) {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       child: Row(
@@ -570,10 +605,13 @@ class DigitalTicketScreen extends StatelessWidget {
               value,
               style: TextStyle(
                 fontSize: 13,
-                fontWeight: isBold ? FontWeight.w700 : FontWeight.w600,
-                color: isLink
-                    ? const Color(0xFF2563EB)
-                    : const Color(0xFF0F172A),
+                fontWeight:
+                    (isBold || isHighlight) ? FontWeight.w700 : FontWeight.w600,
+                color: isHighlight
+                    ? const Color(0xFF1E3A8A)
+                    : isLink
+                        ? const Color(0xFF2563EB)
+                        : const Color(0xFF0F172A),
               ),
             ),
           ),

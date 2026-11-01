@@ -1,12 +1,13 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 import '../constants/api_endpoints.dart';
 import 'network_exceptions.dart';
 
 /// Clean wrapper around http.Client with automatic header injection,
-/// robust error mapping, and timeout management.
+/// request/response logging, error mapping, and timeout management.
 class ApiClient {
   final http.Client _client;
 
@@ -21,6 +22,35 @@ class ApiClient {
       headers['Authorization'] = 'Bearer $token';
     }
     return headers;
+  }
+
+  void _logRequest({
+    required String method,
+    required Uri uri,
+    required Map<String, String> headers,
+    dynamic body,
+  }) {
+    if (kDebugMode) {
+      debugPrint('==================== [ HTTP REQUEST ] ====================');
+      debugPrint('🚀 METHOD: $method');
+      debugPrint('📍 URL   : $uri');
+      debugPrint('📋 HEADERS: ${jsonEncode(headers)}');
+      if (body != null) {
+        debugPrint('📦 BODY   : ${body is String ? body : jsonEncode(body)}');
+      }
+      debugPrint('===========================================================');
+    }
+  }
+
+  void _logResponse(http.Response response) {
+    if (kDebugMode) {
+      debugPrint('==================== [ HTTP RESPONSE ] ====================');
+      debugPrint('📥 STATUS : ${response.statusCode}');
+      debugPrint('📍 URL    : ${response.request?.url ?? ''}');
+      debugPrint('📋 HEADERS: ${jsonEncode(response.headers)}');
+      debugPrint('📄 BODY   : ${response.body}');
+      debugPrint('===========================================================');
+    }
   }
 
   Future<dynamic> get(
@@ -42,9 +72,17 @@ class ApiClient {
 
       final mergedHeaders = {..._defaultHeaders(token: token), ...?headers};
 
+      _logRequest(
+        method: 'GET',
+        uri: uri,
+        headers: mergedHeaders,
+      );
+
       final response = await _client
           .get(uri, headers: mergedHeaders)
           .timeout(ApiEndpoints.connectTimeout);
+
+      _logResponse(response);
 
       return _processResponse(response);
     } on SocketException {
@@ -70,9 +108,18 @@ class ApiClient {
       final mergedHeaders = {..._defaultHeaders(token: token), ...?headers};
       final encodedBody = body is String ? body : jsonEncode(body);
 
+      _logRequest(
+        method: 'POST',
+        uri: uri,
+        headers: mergedHeaders,
+        body: body,
+      );
+
       final response = await _client
           .post(uri, headers: mergedHeaders, body: encodedBody)
           .timeout(ApiEndpoints.receiveTimeout);
+
+      _logResponse(response);
 
       return _processResponse(response);
     } on SocketException {
@@ -127,4 +174,3 @@ class ApiClient {
     _client.close();
   }
 }
-
