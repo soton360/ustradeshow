@@ -549,21 +549,6 @@ class DigitalTicketScreen extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 20),
-
-                      // Close Button
-                      ElevatedButton(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white.withValues(alpha: 0.15),
-                          foregroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 32, vertical: 14),
-                        ),
-                        onPressed: () => Navigator.pop(context),
-                        child: const Text('Back to Home'),
-                      ),
                       const SizedBox(height: 20),
                     ],
                   ),

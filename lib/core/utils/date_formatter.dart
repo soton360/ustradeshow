@@ -18,7 +18,10 @@ class DateFormatter {
 
   static DateTime? tryParse(String? dateStr) {
     if (dateStr == null || dateStr.isEmpty) return null;
-    return DateTime.tryParse(dateStr);
+    final parsed = DateTime.tryParse(dateStr);
+    if (parsed == null) return null;
+    // If the input string contains full ISO time with UTC 'Z' offset (e.g. "2026-11-06T18:00:00.000Z"),
+    // convert it to local timezone (e.g. BST UTC+6 -> 2026-11-07 00:00:00) so the correct day is rendered.
+    return parsed.isUtc ? parsed.toLocal() : parsed;
   }
 }
-
