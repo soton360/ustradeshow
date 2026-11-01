@@ -5,6 +5,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/storage/local_ticket_storage.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/widgets/ribbon_bar.dart';
+import '../../../../core/widgets/skyline_bottom_decoration.dart';
 import 'digital_ticket_screen.dart';
 
 /// Screen displaying all saved digital admission passes in an authentic VIP ticket wallet style.
@@ -44,9 +45,16 @@ class _SavedTicketsScreenState extends State<SavedTicketsScreen> {
           'My Tickets',
         ),
       ),
-      body: _isLoading
-          ? const Center(child: CircularProgressIndicator())
-          : _tickets.isEmpty
+      body: Stack(
+        children: [
+          const SkylineBottomDecoration(
+            backgroundColor: Color(0xFFF1F5F9),
+            height: 160,
+            opacity: 0.35,
+          ),
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : _tickets.isEmpty
               ? _buildEmptyState()
               : ListView(
                   padding:
@@ -133,6 +141,8 @@ class _SavedTicketsScreenState extends State<SavedTicketsScreen> {
                     const SizedBox(height: 20),
                   ],
                 ),
+        ],
+      ),
     );
   }
 

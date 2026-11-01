@@ -3,6 +3,7 @@ import 'package:qr_flutter/qr_flutter.dart';
 import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/widgets/ribbon_bar.dart';
+import '../../../../core/widgets/skyline_bottom_decoration.dart';
 
 /// Official digital admission pass matching 100% the AmCham Trade Show email ticket format.
 class DigitalTicketScreen extends StatelessWidget {
@@ -61,8 +62,15 @@ class DigitalTicketScreen extends StatelessWidget {
           ),
         ),
       ),
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: Stack(
+        children: [
+          const SkylineBottomDecoration(
+            backgroundColor: Color(0xFF0B192C),
+            height: 180,
+            opacity: 0.25,
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           child: Center(
             child: ConstrainedBox(
@@ -533,7 +541,9 @@ class DigitalTicketScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   Widget _buildTableRow(String label, String value,

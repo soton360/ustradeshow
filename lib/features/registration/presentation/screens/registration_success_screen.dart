@@ -4,6 +4,7 @@ import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/widgets/ribbon_bar.dart';
+import '../../../../core/widgets/skyline_bottom_decoration.dart';
 import '../../data/models/registration_response_model.dart';
 import '../../../ticket/presentation/screens/digital_ticket_screen.dart';
 
@@ -104,8 +105,15 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
 
     return Scaffold(
       backgroundColor: AppColors.background,
-      body: SafeArea(
-        child: SingleChildScrollView(
+      body: Stack(
+        children: [
+          const SkylineBottomDecoration(
+            backgroundColor: AppColors.background,
+            height: 160,
+            opacity: 0.35,
+          ),
+          SafeArea(
+            child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Center(
             child: ConstrainedBox(
@@ -560,7 +568,9 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
           ),
         ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   Widget _buildSummaryRow(

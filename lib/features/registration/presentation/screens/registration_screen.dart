@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/services/app_update_service.dart';
+import '../../../../core/widgets/skyline_bottom_decoration.dart';
 import '../controllers/registration_controller.dart';
 import '../controllers/seminar_controller.dart';
 import '../widgets/compact_event_header.dart';
@@ -186,9 +187,16 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           const SizedBox(width: 4),
         ],
       ),
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
+      body: Stack(
+        children: [
+          const SkylineBottomDecoration(
+            backgroundColor: Color(0xFFF0F4F8),
+            height: 160,
+            opacity: 0.35,
+          ),
+          SafeArea(
+            child: LayoutBuilder(
+              builder: (context, constraints) {
             final isDesktop = constraints.maxWidth >= 980;
 
             if (isDesktop) {
@@ -256,7 +264,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
           },
         ),
       ),
-    );
+    ],
+  ),
+);
   }
 
   Widget _buildFooter() {

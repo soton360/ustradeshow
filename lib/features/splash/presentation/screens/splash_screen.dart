@@ -4,6 +4,7 @@ import '../../../../core/constants/app_assets.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/widgets/ribbon_bar.dart';
+import '../../../../core/widgets/skyline_bottom_decoration.dart';
 
 /// Animated splash entry screen for 30th U.S. Trade Show 2026.
 class SplashScreen extends StatefulWidget {
@@ -89,6 +90,13 @@ class _SplashScreenState extends State<SplashScreen>
       backgroundColor: Colors.white,
       body: Stack(
         children: [
+          // Bottom Skyline Background
+          const SkylineBottomDecoration(
+            backgroundColor: Colors.white,
+            height: 160,
+            opacity: 0.45,
+          ),
+
           // Top Ribbon Bar
           const Positioned(
             top: 0,
