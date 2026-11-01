@@ -552,11 +552,12 @@ class _RegistrationSuccessScreenState extends State<RegistrationSuccessScreen>
                       ),
                       child: Center(
                         child: Text(
-                          '30th U.S. Trade Show 2026 · 5–7 November 2026 · InterContinental Dhaka · ${AppStrings.website}',
+                          '30th U.S. Trade Show 2026 · 5–7 November 2026 · InterContinental Dhaka · ${AppStrings.website}\nDeveloped by M360 ICT',
                           textAlign: TextAlign.center,
                           style: const TextStyle(
-                            fontSize: 11,
+                            fontSize: 10.5,
                             color: AppColors.textMuted,
+                            height: 1.4,
                           ),
                         ),
                       ),

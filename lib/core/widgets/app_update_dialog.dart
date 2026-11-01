@@ -232,19 +232,6 @@ class AppUpdateDialog extends StatelessWidget {
               ],
             ),
           ),
-          if (!updateResult.isForceUpdate)
-            Positioned(
-              top: 10,
-              right: 10,
-              child: IconButton(
-                icon: const Icon(Icons.close_rounded,
-                    color: AppColors.textMuted),
-                onPressed: () {
-                  Navigator.pop(context);
-                  onDismiss?.call();
-                },
-              ),
-            ),
         ],
       ),
     );

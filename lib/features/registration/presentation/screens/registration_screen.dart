@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/constants/app_colors.dart';
 import '../../../../core/constants/app_strings.dart';
 import '../../../../core/services/app_update_service.dart';
+import '../../../../core/widgets/app_update_banner.dart';
 import '../../../../core/widgets/skyline_bottom_decoration.dart';
 import '../controllers/registration_controller.dart';
 import '../controllers/seminar_controller.dart';
@@ -28,13 +29,20 @@ class RegistrationScreen extends StatefulWidget {
 }
 
 class _RegistrationScreenState extends State<RegistrationScreen> {
+  UpdateResult? _updateResult;
+
   @override
   void initState() {
     super.initState();
     // Pre-fetch seminars quietly in background & check for app updates
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       widget.semController.fetchSeminars();
-      AppUpdateService.instance.checkForUpdateAndPrompt(context);
+      final result = await AppUpdateService.instance.checkForUpdate();
+      if (mounted && result.isUpdateAvailable) {
+        setState(() {
+          _updateResult = result;
+        });
+      }
     });
   }
 
@@ -149,19 +157,6 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
         ),
         actions: [
           IconButton(
-            tooltip: 'Check for Updates',
-            icon: const Icon(
-              Icons.system_update_rounded,
-              color: AppColors.primaryNavy,
-            ),
-            onPressed: () {
-              AppUpdateService.instance.checkForUpdateAndPrompt(
-                context,
-                isManualCheck: true,
-              );
-            },
-          ),
-          IconButton(
             tooltip: 'Event Guide & Details',
             icon: const Icon(
               Icons.info_outline_rounded,
@@ -195,78 +190,94 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             opacity: 0.35,
           ),
           SafeArea(
-            child: LayoutBuilder(
-              builder: (context, constraints) {
-            final isDesktop = constraints.maxWidth >= 980;
+            child: Column(
+              children: [
+                if (_updateResult != null &&
+                    _updateResult!.isUpdateAvailable)
+                  AppUpdateBanner(
+                    updateResult: _updateResult!,
+                    onUpdate: () => AppUpdateService.instance
+                        .openStore(_updateResult!.storeUrl),
+                  ),
+                Expanded(
+                  child: LayoutBuilder(
+                    builder: (context, constraints) {
+                      final isDesktop = constraints.maxWidth >= 980;
 
-            if (isDesktop) {
-              return Center(
-                child: ConstrainedBox(
-                  constraints: const BoxConstraints(maxWidth: 1200),
-                  child: SingleChildScrollView(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 24, vertical: 20),
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // Left side: Event info
-                            const Expanded(
-                              flex: 5,
-                              child: EventOverviewCard(),
-                            ),
-                            const SizedBox(width: 24),
-                            // Right side: Registration Form
-                            Expanded(
-                              flex: 6,
-                              child: RegistrationFormCard(
-                                regController: widget.regController,
-                                semController: widget.semController,
-                                onSuccess: _navigateToSuccess,
+                      if (isDesktop) {
+                        return Center(
+                          child: ConstrainedBox(
+                            constraints: const BoxConstraints(maxWidth: 1200),
+                            child: SingleChildScrollView(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 24, vertical: 20),
+                              child: Column(
+                                children: [
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      // Left side: Event info
+                                      const Expanded(
+                                        flex: 5,
+                                        child: EventOverviewCard(),
+                                      ),
+                                      const SizedBox(width: 24),
+                                      // Right side: Registration Form
+                                      Expanded(
+                                        flex: 6,
+                                        child: RegistrationFormCard(
+                                          regController: widget.regController,
+                                          semController: widget.semController,
+                                          onSuccess: _navigateToSuccess,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 30),
+                                  _buildFooter(),
+                                ],
                               ),
                             ),
+                          ),
+                        );
+                      }
+
+                      // Mobile & Tablet Portrait: Clean Single Scrollable View
+                      return SingleChildScrollView(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 16, vertical: 12),
+                        child: Column(
+                          children: [
+                            // Compact Hero Header with quick-info & guide button
+                            CompactEventHeader(
+                              onOpenGuide: () =>
+                                  _showEventDetailsSheet(context),
+                            ),
+                            const SizedBox(height: 14),
+
+                            // The Main Registration Form - Immediately available to visitor
+                            RegistrationFormCard(
+                              regController: widget.regController,
+                              semController: widget.semController,
+                              onSuccess: _navigateToSuccess,
+                            ),
+                            const SizedBox(height: 24),
+
+                            // Footer
+                            _buildFooter(),
                           ],
                         ),
-                        const SizedBox(height: 30),
-                        _buildFooter(),
-                      ],
-                    ),
+                      );
+                    },
                   ),
                 ),
-              );
-            }
-
-            // Mobile & Tablet Portrait: Clean Single Scrollable View
-            return SingleChildScrollView(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Column(
-                children: [
-                  // Compact Hero Header with quick-info & guide button
-                  CompactEventHeader(
-                    onOpenGuide: () => _showEventDetailsSheet(context),
-                  ),
-                  const SizedBox(height: 14),
-
-                  // The Main Registration Form - Immediately available to visitor
-                  RegistrationFormCard(
-                    regController: widget.regController,
-                    semController: widget.semController,
-                    onSuccess: _navigateToSuccess,
-                  ),
-                  const SizedBox(height: 24),
-
-                  // Footer
-                  _buildFooter(),
-                ],
-              ),
-            );
-          },
-        ),
+              ],
+            ),
+          ),
+        ],
       ),
-    ],
-  ),
-);
+    );
   }
 
   Widget _buildFooter() {
@@ -289,6 +300,17 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
             fontSize: 11.5,
             color: AppColors.accentBlue,
             fontWeight: FontWeight.w600,
+          ),
+        ),
+        SizedBox(height: 6),
+        Text(
+          'Developed by M360 ICT',
+          textAlign: TextAlign.center,
+          style: TextStyle(
+            fontSize: 10,
+            color: AppColors.textMuted,
+            fontWeight: FontWeight.w400,
+            letterSpacing: 0.3,
           ),
         ),
         SizedBox(height: 16),

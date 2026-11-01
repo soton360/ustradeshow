@@ -504,7 +504,7 @@ class DigitalTicketScreen extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                '© 2026 AmCham Bangladesh. All rights reserved.',
+                                '© 2026 AmCham Bangladesh. All rights reserved. · Developed by M360 ICT',
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 10,

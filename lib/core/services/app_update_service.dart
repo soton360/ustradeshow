@@ -41,7 +41,7 @@ class AppUpdateService {
       'app_update_last_dismissed_timestamp';
 
   /// Check if a newer version of the app exists on Google Play Store (Android) or Apple App Store (iOS).
-  Future<UpdateResult> checkForUpdate() async {
+  Future<UpdateResult> checkForUpdate({bool debugSimulate = false}) async {
     String currentVersion = '1.0.0';
     String currentBuild = '1';
     String packageName = 'com.amcham.ustradeshow';
@@ -58,6 +58,16 @@ class AppUpdateService {
     final playStoreUrl =
         'https://play.google.com/store/apps/details?id=$packageName';
     final appStoreUrl = 'https://apps.apple.com/app/id$packageName';
+
+    if (debugSimulate) {
+      return UpdateResult(
+        isUpdateAvailable: true,
+        currentVersion: currentVersion,
+        latestVersion: '1.0.2',
+        isForceUpdate: false,
+        storeUrl: Platform.isIOS ? appStoreUrl : playStoreUrl,
+      );
+    }
 
     // 1. Android Platform Specific Update Checks
     if (!kIsWeb && Platform.isAndroid) {

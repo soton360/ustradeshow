@@ -264,6 +264,16 @@ class _SplashScreenState extends State<SplashScreen>
                       color: AppColors.primaryNavy,
                     ),
                   ),
+                  SizedBox(height: 6),
+                  Text(
+                    'Developed by M360 ICT',
+                    style: TextStyle(
+                      fontSize: 9.5,
+                      fontWeight: FontWeight.w400,
+                      color: AppColors.textMuted,
+                      letterSpacing: 0.2,
+                    ),
+                  ),
                 ],
               ),
             ),
